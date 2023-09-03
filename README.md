@@ -7,7 +7,7 @@ This python program uses the tkinter library to create a fully functioning text 
 **New File** - Clears the current contents of the editor and opens an untitled page. Bind: Ctrl + n.  
 **Open File** - Opens the file browser and allows users to select the file they want to open. Bind: Ctrl + o.  
 **Save File** - Saves the current contents of the file. Bind: Ctrl + s.  
-**Save File As** - saves the current contents of the file to a new file specified by the user. Bind: Ctrl + a.  
+**Save File As** - Saves the current contents of the file to a new file specified by the user. Bind: Ctrl + a.  
 
 ### Edit Commands
 **Undo** - Undos any operation that modifies the content of the file. Bind: Ctrl + z.  
