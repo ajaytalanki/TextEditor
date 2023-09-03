@@ -21,7 +21,6 @@ unsaved_changes = False
 global saved_content
 saved_content = False
 
-
 def create_new_file(signal=None):
 
     window.title("Untitled")
@@ -317,7 +316,7 @@ find_entry = Entry(frame, fg='gray')
 find_entry.insert(0, "Find")
 
 # creates the text_box which will be the contents of each file
-text_box = Text(frame, width=100, height=25, font=("Helvetica, 16"), selectbackground="yellow", selectforeground="black", undo=True, yscrollcommand=scroll_bar.set)
+text_box = Text(frame, width=130, height=50, font=("Consolas", 12), selectbackground="yellow", selectforeground="black", undo=True, yscrollcommand=scroll_bar.set)
 text_box.pack()
 
 scroll_bar.configure(command=text_box.yview)
@@ -354,7 +353,6 @@ window.bind('<Control-f>', show_find_entry)
 window.bind('<Control-h>', clear_highlight)
 window.bind('<Control-r>', replace_command)
 text_box.bind('<Key>', mark_unsaved)
-
 
 # calls the quit command when the user attempts to exit the window
 window.protocol("WM_DELETE_WINDOW", quit)
