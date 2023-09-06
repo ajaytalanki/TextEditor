@@ -38,9 +38,9 @@ def create_new_file(signal=None):
     # delete the current text to start new file
     text_box.delete("1.0", END)
 
-    # initializes saved_content to empty
+    # no saved content 
     global saved_content
-    saved_content = ""
+    saved_content = False
     
 def open_file(signal=None):
 
@@ -180,6 +180,7 @@ def show_find_entry(signal=None):
     find_dialog.title("Find")
     find_label = Label(find_dialog, text="Find:")
     find_label.grid(row=0, column=0, padx=5, pady=5)
+    find_dialog.geometry("200x30")
 
     # displays find_entry
     global find_entry
@@ -225,28 +226,6 @@ def find(signal):
 def clear_highlight():
     text_box.tag_remove("found", "1.0", END)
     
-def quit():
-
-    global unsaved_changes
-
-    # gets the current content to compare with the previously saved content
-    curr_content = text_box.get(1.0, END)
-
-    # if the saved content and current content are not equal and there's unsaved changes, prompt the user
-    if unsaved_changes and curr_content != saved_content:
-        result = messagebox.askyesno("Unsaved Changes", "You have unsaved changes. Do you want to save before quitting?")
-        
-        # user selected yes
-        if result: 
-            save()
-
-        # close window
-        window.destroy()
-
-    # no unsaved changes, so quit the program without prompting the user
-    else:
-        window.destroy()
-
 def replace_command(sginal=None):
 
     replace_dialog = Toplevel(window)
@@ -285,10 +264,43 @@ def replace_command(sginal=None):
     # creates the button to perform replacement
     replace_button = Button(replace_dialog, text="Replace", command=lambda: perform_replace(replace_word_entry.get(), replace_with_entry.get()))
     replace_button.grid(row=2, columnspan=2, padx=5, pady=5)
-    
+
+# there are unsaved changes in the text editor file
 def mark_unsaved(signal=None):
     global unsaved_changes
     unsaved_changes = True
+
+def quit():
+
+    global unsaved_changes
+    global saved_content
+
+    # gets the current content to compare with the previously saved content
+    curr_content = text_box.get(1.0, END)
+
+    # text_box was empty when user attempted to exit window
+    if(curr_content == "" or curr_content == "\n"):
+        curr_content = False
+
+    # user opened new file and left editor empty
+    if(not saved_content and not curr_content):
+        window.destroy()
+
+    # user attempted to quit with unsaved changes
+    elif unsaved_changes and curr_content != saved_content:
+        result = messagebox.askyesno("Unsaved Changes", "You have unsaved changes. Do you want to save before quitting?")
+        
+        # user selected yes
+        if result: 
+            save()
+
+        # user selected no
+        window.destroy()
+
+    # no unsaved changes, so quit the program without prompting the user
+    else:
+        window.destroy()
+
 
 # window frame for the program
 frame = Frame(window)
@@ -303,7 +315,7 @@ scroll_bar = Scrollbar(frame)
 scroll_bar.pack(side = RIGHT, fill=Y)
 
 # creates the text_box which will be the contents of each file
-text_box = Text(frame, width=130, height=50, font=("Consolas", 12), selectbackground="yellow", selectforeground="black", undo=True, yscrollcommand=scroll_bar.set)
+text_box = Text(frame, width=130, height=50, font=("Consolas", 12), selectbackground="#0066CC", undo=True, yscrollcommand=scroll_bar.set)
 text_box.pack()
 
 # provides the vertical scrolling functionality for the text_box widget.
@@ -312,21 +324,21 @@ scroll_bar.configure(command=text_box.yview)
 # initializes and populates the File menu commands
 file_menu = Menu(menu_bar, tearoff=False)
 menu_bar.add_cascade(label="File", menu=file_menu)
-file_menu.add_command(label="New File", accelerator="Ctrl+n",  command = create_new_file)
-file_menu.add_command(label="Open File", accelerator="Ctrl+o", command=open_file)
-file_menu.add_command(label="Save File", accelerator="Ctrl+s", command=save)
-file_menu.add_command(label="Save File As", accelerator="Ctrl+a", command=save_as)
+file_menu.add_command(label="New File", accelerator="Ctrl + n",  command = create_new_file)
+file_menu.add_command(label="Open File", accelerator="Ctrl + o", command=open_file)
+file_menu.add_command(label="Save File", accelerator="Ctrl + s", command=save)
+file_menu.add_command(label="Save File As", accelerator="Ctrl + a", command=save_as)
 
 # initializes and populates the Edit menu commands
 edit_menu = Menu(menu_bar, tearoff=False)
 menu_bar.add_cascade(label="Edit", menu=edit_menu)
-edit_menu.add_command(label="Undo", accelerator="Ctrl+z", command=text_box.edit_undo)
-edit_menu.add_command(label="Redo", accelerator="Ctrl+y", command=text_box.edit_redo)
-edit_menu.add_command(label="Cut", accelerator="Ctrl+x", command=lambda:cut(False))
-edit_menu.add_command(label="Copy", accelerator="Ctrl+c", command=lambda:copy(False))
-edit_menu.add_command(label="Paste", accelerator="Ctrl+v", command=lambda:paste(False))
-edit_menu.add_command(label="Find", accelerator="Ctrl+f",command=show_find_entry)
-edit_menu.add_command(label="Replace", accelerator="Ctrl+r", command=replace_command)
+edit_menu.add_command(label="Undo", accelerator="Ctrl + z", command=text_box.edit_undo)
+edit_menu.add_command(label="Redo", accelerator="Ctrl + y", command=text_box.edit_redo)
+edit_menu.add_command(label="Cut", accelerator="Ctrl + x", command=lambda:cut(False))
+edit_menu.add_command(label="Copy", accelerator="Ctrl + c", command=lambda:copy(False))
+edit_menu.add_command(label="Paste", accelerator="Ctrl + v", command=lambda:paste(False))
+edit_menu.add_command(label="Find", accelerator="Ctrl + f",command=show_find_entry)
+edit_menu.add_command(label="Replace", accelerator="Ctrl + r", command=replace_command)
 edit_menu.add_command(label="Clear Highlights", command=clear_highlight)
 
 # binds the appropriate key binding to each command shortcut
