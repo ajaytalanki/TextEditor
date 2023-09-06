@@ -1,25 +1,31 @@
 from tkinter import *
 from tkinter import filedialog
-from tkinter import font
 from tkinter import messagebox
 import os
+
+# points to the current file path that is being edited
+global open_filename
+open_filename = False
+
+# text that is being selected
+global highlighted_text
+highlighted_text = False
+
+# determines if there are changes made to the file that aren't saved
+global unsaved_changes 
+unsaved_changes = False
+
+# the last saved text content of the file in the editor
+global saved_content
+saved_content = False
 
 window = Tk()
 window.title("Text Editor")
 window.iconbitmap("notepad.ico")
 window.geometry("1200x660")
 
-global open_filename
-open_filename = False
-
-global highlighted_text
-highlighted_text = False
-
-global unsaved_changes 
-unsaved_changes = False
-
-global saved_content
-saved_content = False
+global find_entry
+find_entry = None
 
 def create_new_file(signal=None):
 
@@ -167,39 +173,26 @@ def paste(signal):
             # insert copied text
             text_box.insert(pos, highlighted_text)
 
-def show_find_entry(signal):
+def show_find_entry(signal=None):
 
-    # show entry box and remove focus 
-    find_entry.pack()   
-    window.focus_set() 
+    # sets up the toplevel for the find_entry
+    find_dialog = Toplevel(window)
+    find_dialog.title("Find")
+    find_label = Label(find_dialog, text="Find:")
+    find_label.grid(row=0, column=0, padx=5, pady=5)
 
-    # clears the current content of the entry and displays "Find" in shadowed text
-    find_entry.delete(0, END)   
-    find_entry.insert(0, "Find")
-    find_entry.config(fg='gray')  
-
-    # clears the shadowed "Find" text when the user clicks on the entry 
-    def on_entry_click(signal):
-        if find_entry.get() == "Find":
-            find_entry.delete(0, END)  
-            find_entry.config(fg='black')  
-    
-    # inserts the shadowed "Find" text when the user clicks off the entry 
-    def on_entry_leave(signal):
-        if find_entry.get() == "":
-            find_entry.insert(0, "Find")
-            find_entry.config(fg='gray')  
-
-    # clears and inserts the "Find" text in the entry box when the user clicks and unclicks
-    find_entry.bind('<FocusIn>', on_entry_click)
-    find_entry.bind('<FocusOut>', on_entry_leave)
-
-    # calls the find function when the user hits enter
+    # displays find_entry
+    global find_entry
+    find_entry = Entry(find_dialog)
+    find_entry.delete(0, END)
+    find_entry.grid(row=0, column=1, padx=5, pady=5)
+    find_entry.focus_set()
     find_entry.bind("<Return>", find)  
 
 def find(signal):
 
     # grabs the word to search for 
+    global find_entry
     query = find_entry.get()
 
     # remove the tags from previous seraches
@@ -229,11 +222,9 @@ def find(signal):
         text_box.tag_config("found", background="#FFFF99", foreground="#000080")
 
 # clears the highlighted words after using the "Find" command
-def clear_highlight(signal):
+def clear_highlight():
     text_box.tag_remove("found", "1.0", END)
-    find_entry.delete(0, END)  
-    find_entry.pack_forget()  
-
+    
 def quit():
 
     global unsaved_changes
@@ -311,14 +302,11 @@ window.config(menu=menu_bar)
 scroll_bar = Scrollbar(frame)
 scroll_bar.pack(side = RIGHT, fill=Y)
 
-# creates shadowed text for the "Find" entry
-find_entry = Entry(frame, fg='gray')
-find_entry.insert(0, "Find")
-
 # creates the text_box which will be the contents of each file
 text_box = Text(frame, width=130, height=50, font=("Consolas", 12), selectbackground="yellow", selectforeground="black", undo=True, yscrollcommand=scroll_bar.set)
 text_box.pack()
 
+# provides the vertical scrolling functionality for the text_box widget.
 scroll_bar.configure(command=text_box.yview)
 
 # initializes and populates the File menu commands
@@ -338,8 +326,8 @@ edit_menu.add_command(label="Cut", accelerator="Ctrl+x", command=lambda:cut(Fals
 edit_menu.add_command(label="Copy", accelerator="Ctrl+c", command=lambda:copy(False))
 edit_menu.add_command(label="Paste", accelerator="Ctrl+v", command=lambda:paste(False))
 edit_menu.add_command(label="Find", accelerator="Ctrl+f",command=show_find_entry)
-edit_menu.add_command(label="Clear Highlights", accelerator="Ctrl+h", command=clear_highlight)
-edit_menu.add_command(label="Replace", accelerator="Ctrl+h", command=replace_command)
+edit_menu.add_command(label="Replace", accelerator="Ctrl+r", command=replace_command)
+edit_menu.add_command(label="Clear Highlights", command=clear_highlight)
 
 # binds the appropriate key binding to each command shortcut
 window.bind('<Control-n>', create_new_file)
@@ -350,7 +338,6 @@ window.bind('<Control-x>', cut)
 window.bind('<Control-c>', copy)
 window.bind('<Control-v>', paste)
 window.bind('<Control-f>', show_find_entry)
-window.bind('<Control-h>', clear_highlight)
 window.bind('<Control-r>', replace_command)
 text_box.bind('<Key>', mark_unsaved)
 
