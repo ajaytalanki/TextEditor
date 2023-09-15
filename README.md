@@ -20,5 +20,5 @@ This python program uses the tkinter library to create a fully functioning text 
 **Replace** - Prompts the user for a word to replace and the desired replacement. The editor replaces every occurance of the old word with the new word. Bind: Ctrl + r.  
 
 
-### Demo
+## Demo
 A working demo of this project can be found on my [portfolio](https://ajaytalanki.github.io/portfolio/).
