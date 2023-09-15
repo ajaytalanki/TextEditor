@@ -18,3 +18,7 @@ This python program uses the tkinter library to create a fully functioning text 
 **Find** - Prompts the user to enter a query. The editor highlights all occurances of the query. Bind: Ctrl + f.  
 **Clear Highlights** - Clears the highlights of all words tagged by the Find operation. Bind: Ctrl + h.  
 **Replace** - Prompts the user for a word to replace and the desired replacement. The editor replaces every occurance of the old word with the new word. Bind: Ctrl + r.  
+
+
+### Demo
+A working demo of this project can be found on my [portfolio](https://ajaytalanki.github.io/portfolio/).
