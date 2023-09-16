@@ -15,9 +15,9 @@ This python program uses the tkinter library to create a fully functioning text 
 **Cut** - Deletes the highlighted text and copies it to the clipboard. Bind: Ctrl + x.  
 **Copy** - Copies the highlighted text to the clipboard without deleting. BInd: Ctrl + c.  
 **Paste** - Pastes the contents of the clipboard to the file. Bind: Ctrl + v.  
-**Find** - Prompts the user to enter a query. The editor highlights all occurances of the query. Bind: Ctrl + f.  
-**Clear Highlights** - Clears the highlights of all words tagged by the Find operation. Bind: Ctrl + h.  
+**Find** - Prompts the user to enter a query. The editor highlights all occurances of the query. Bind: Ctrl + f. 
 **Replace** - Prompts the user for a word to replace and the desired replacement. The editor replaces every occurance of the old word with the new word. Bind: Ctrl + r.  
+**Clear Highlights** - Clears the highlights of all words tagged by the Find operation. 
 
 
 ## Demo
