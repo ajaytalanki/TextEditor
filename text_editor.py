@@ -19,13 +19,13 @@ unsaved_changes = False
 global saved_content
 saved_content = False
 
+global find_entry
+find_entry = None
+
 window = Tk()
 window.title("Text Editor")
 window.iconbitmap("notepad.ico")
 window.geometry("1200x660")
-
-global find_entry
-find_entry = None
 
 def create_new_file(signal=None):
 
@@ -301,6 +301,10 @@ def quit():
     else:
         window.destroy()
 
+# sets the tab spaces to 2 instead of 8
+def insert_tab(signal=None):
+    text_box.insert(INSERT, "  ")
+    return 'break'
 
 # window frame for the program
 frame = Frame(window)
@@ -352,6 +356,7 @@ window.bind('<Control-v>', paste)
 window.bind('<Control-f>', show_find_entry)
 window.bind('<Control-r>', replace_command)
 text_box.bind('<Key>', mark_unsaved)
+text_box.bind('<Tab>', insert_tab)
 
 # calls the quit command when the user attempts to exit the window
 window.protocol("WM_DELETE_WINDOW", quit)
