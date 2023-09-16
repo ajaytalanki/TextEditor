@@ -1,5 +1,5 @@
 # TextEditor
-This python program uses the tkinter library to create a fully functioning text editor that is similar to the Windows notepad. 
+This python program uses the tkinter library to create a fully functioning text editor for everyday tasks.
 
 ## Commands
 
