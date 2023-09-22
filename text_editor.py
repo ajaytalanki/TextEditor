@@ -29,18 +29,15 @@ window.geometry("1200x660")
 
 def create_new_file(signal=None):
 
+    # rename window and empty text widget
     window.title("Untitled")
-
-    # there is no open file yet
-    global open_filename
-    open_filename = False
-
-    # delete the current text to start new file
     text_box.delete("1.0", END)
 
-    # no saved content 
+    # there is no saved content, and no file is currently open
     global saved_content
     saved_content = False
+    global open_filename
+    open_filename = False
     
 def open_file(signal=None):
 
@@ -76,11 +73,9 @@ def save(signal=None):
     # if there is an open file
     if open_filename:
 
-        # updates the saved_content
+        # updates the saved_content and resets unsaved_changes
         global saved_content
         saved_content = text_box.get(1.0, END)
-
-        # there are no unsaved changes now
         global unsaved_changes
         unsaved_changes = False
 
@@ -97,15 +92,11 @@ def save_as(signal=None):
     saved_file_path = filedialog.asksaveasfilename(defaultextension="*.txt", filetypes=(("Text Files", "*.txt"), ("All files", "*.*")))
     if saved_file_path:
 
-        # updates the open file
+        # updates open file and saved content
         global open_filename
         open_filename = saved_file_path
-
-        # updates the saved_content
         global saved_content
         saved_content = text_box.get(1.0, END)
-
-        # no unsaved changes
         global unsaved_changes
         unsaved_changes = False
 
@@ -167,10 +158,8 @@ def paste(signal):
     else:
         if highlighted_text:
             
-            # get current position
-            pos = text_box.index(INSERT)
-
             # insert copied text
+            pos = text_box.index(INSERT)
             text_box.insert(pos, highlighted_text)
 
 def show_find_entry(signal=None):
@@ -306,26 +295,20 @@ def insert_tab(signal=None):
     text_box.insert(INSERT, "  ")
     return 'break'
 
-# window frame for the program
 frame = Frame(window)
 frame.pack(pady=5)
 
-# menu bar for the File and Edit menus
 menu_bar = Menu(window)
 window.config(menu=menu_bar)
 
-# creates a vertical scroll bar on the right side of screen
 scroll_bar = Scrollbar(frame)
 scroll_bar.pack(side = RIGHT, fill=Y)
 
-# creates the text_box which will be the contents of each file
 text_box = Text(frame, width=130, height=50, font=("Consolas", 12), selectbackground="#0066CC", undo=True, yscrollcommand=scroll_bar.set)
 text_box.pack()
 
-# provides the vertical scrolling functionality for the text_box widget.
 scroll_bar.configure(command=text_box.yview)
 
-# initializes and populates the File menu commands
 file_menu = Menu(menu_bar, tearoff=False)
 menu_bar.add_cascade(label="File", menu=file_menu)
 file_menu.add_command(label="New File", accelerator="Ctrl + n",  command = create_new_file)
@@ -333,7 +316,6 @@ file_menu.add_command(label="Open File", accelerator="Ctrl + o", command=open_fi
 file_menu.add_command(label="Save File", accelerator="Ctrl + s", command=save)
 file_menu.add_command(label="Save File As", accelerator="Ctrl + a", command=save_as)
 
-# initializes and populates the Edit menu commands
 edit_menu = Menu(menu_bar, tearoff=False)
 menu_bar.add_cascade(label="Edit", menu=edit_menu)
 edit_menu.add_command(label="Undo", accelerator="Ctrl + z", command=text_box.edit_undo)
